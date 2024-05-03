@@ -1,0 +1,105 @@
+html,
+body {
+    background-color: #ebebeb;
+}
+
+/* header */
+.search-box {
+    background-color: #acb0c2;
+    width: 30% !important;
+}
+
+.header-container {
+    /* margin-bottom: 50px solid #D9D9D9 !important; */
+    margin-bottom: 50px solid black !important;
+    width: 70% !important;
+}
+
+.login-btn {
+    background-color: #acb0c2;
+    cursor: pointer !important;
+}
+/* header End */
+
+/* peta */
+.denah-title {
+    color: #4455a2;
+}
+
+.peta-container {
+    border: 5px solid black;
+    content: "";
+}
+
+.kelas-tengah {
+    border-top: 2px solid black;
+    content: "";
+}
+
+.kelas-tengah-bawah {
+    border-bottom: 2px solid black;
+    content: "";
+}
+
+.kelas {
+    border: 2px solid black;
+    content: "";
+    height: 100px !important;
+    cursor: pointer;
+    background-color: #fbecb3;
+    opacity: 0.9;
+}
+
+/* -- modal peta -- */
+.modal-card {
+    background-color: #e1e1e1;
+}
+.modal-img {
+    width: 75px;
+}
+/* -- modal peta -- */
+
+.search-box,
+.header-container {
+    position: absolute;
+    z-index: 1;
+}
+
+.search-box {
+    max-height: 500px;
+    overflow: hidden;
+}
+
+.search-trigger {
+    cursor: pointer;
+}
+
+.search-btn {
+    z-index: 9999;
+}
+
+.search-box-container {
+    overflow-y: auto;
+    max-height: 200px;
+}
+
+.search-result-container {
+    overflow-y: auto;
+    max-height: 400px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.search-result-container::-webkit-scrollbar {
+    display: none;
+}
+
+.header-container {
+    right: 0;
+}
+
+.peta-container-wrap {
+    margin-top: 100px !important;
+}
+
+/* peta end */

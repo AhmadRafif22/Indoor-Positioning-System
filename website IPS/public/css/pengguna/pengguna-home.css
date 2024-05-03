@@ -1,0 +1,9 @@
+.pengguna-content-container {
+    background-color: #FAFDFB;
+}
+.pengguna-card {
+    background-color: #F9F9F9;
+    -webkit-box-shadow: 0px 0px 10px 1px rgba(122,122,122,0.6);
+    -moz-box-shadow: 0px 0px 10px 1px rgba(122,122,122,0.6);
+    box-shadow: 0px 0px 10px 1px rgba(122,122,122,0.6);
+}

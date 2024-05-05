@@ -13,6 +13,69 @@
 </head>
 
 <body>
+    <!-- Modal Login-->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-3 fw-bold" id="staticBackdropLabel">Login</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body container">
+
+                    <form method="POST" action="{{ route('login') }}">
+                        @csrf
+
+                        <div class="mb-3">
+                            <label for="email" :value="__('Email')" class="form-label">Email
+                                address</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                :value="old('email')" required autofocus autocomplete="username">
+                            <x-input-error :messages="$errors->get('email')" class="mt-2 text-danger" />
+                        </div>
+
+                        <div class="mb-5">
+                            <label for="password" :value="__('Password')" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required
+                                autocomplete="current-password">
+                            <x-input-error :messages="$errors->get('password')" class="mt-2 text-danger" />
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Login</button>
+                        </div>
+
+                        <div class="container d-flex justify-content-between">
+                            <!-- Remember Me -->
+                            <div class="block mt-4">
+                                <label for="remember_me" class="inline-flex items-center">
+                                    <input id="remember_me" type="checkbox"
+                                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                        name="remember">
+                                    <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+                                </label>
+                            </div>
+
+                            <div class="flex items-center justify-end mt-4">
+                                @if (Route::has('password.request'))
+                                    <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        href="{{ route('password.request') }}">
+                                        {{ __('Forgot your password?') }}
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Modal Login end-->
+
     {{-- header --}}
     <div class="container py-5 d-flex position-relative">
 
@@ -22,81 +85,39 @@
 
                 <div class="d-flex justify-content-between align-items-center search-trigger mb-3">
                     <h4 class="fw-bold text-white mb-0">Cari Pengguna Perangkat</h4>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="25" width="25"
-                        viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
-                        <path fill="#ffffff"
-                            d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM135 241c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l87 87 87-87c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 345c-9.4 9.4-24.6 9.4-33.9 0L135 241z" />
-                    </svg>
+                    <span id="search-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="25" width="25"
+                            viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                            <path fill="#ffffff"
+                                d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM135 241c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l87 87 87-87c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 345c-9.4 9.4-24.6 9.4-33.9 0L135 241z" />
+                        </svg>
+                    </span>
                 </div>
 
-                <form id="searchForm" action="{{ route('search') }}" method="GET">
+                <form id="searchForm">
                     <div class="input-group mb-3">
                         <input type="text" name="term" class="form-control" placeholder="Masukkan nama pengguna"
                             aria-label="Recipient's username" aria-describedby="button-addon2" id="searchInput">
-                        <button class="btn search-btn bg-white" type="submit">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-search" viewBox="0 0 16 16">
-                                <path
-                                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                        <button class="btn bg-white px-1" type="reset">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="15" width="15"
+                                viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                <path fill="#acb0c2"
+                                    d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z" />
+                            </svg>
+                        </button>
+                        <button class="btn search-btn bg-white" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20"
+                                viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                <path fill="#20304c"
+                                    d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
                             </svg>
                         </button>
                     </div>
                 </form>
             </div>
 
-            <div class="search-result-container">
-                @if (isset($users) && $users->count() > 0)
-                    @foreach ($users as $user)
-                        @if ($user->active == true)
-                            <div class="modal-card p-3 m-2 mb-3 rounded-3 search-card-{{ $user->id }}">
-                                <div class="d-flex align-items-center">
-                                    <div class="me-4">
-                                        <img src="/img/profile-active.png" alt="" class="modal-img"
-                                            style="width:60px;">
-                                    </div>
-                                    <div>
-                                        <h5 class="fs-5 mb-1">
-                                            {{ $user->name }}
-                                        </h5>
-                                        <p class="mb-0 fs-6">{{ $user->mac }}</p>
-                                        <p class="mb-0 fs-6">{{ $user->jabatan }} - {{ $user->kode }}</p>
-                                    </div>
-                                </div>
-                                <hr>
-                                <h6 class="text-secondary text-end mb-0">
-                                    {{ $user->predRoom }}
-                                </h6>
-                            </div>
-                        @else
-                            <div class="modal-card p-3 m-2 mb-3 rounded-3 search-card-{{ $user->id }}">
-                                <div class="d-flex align-items-center">
-                                    <div class="me-4">
-                                        <img src="/img/profile-disconect.png" alt="" class="modal-img"
-                                            style="width:60px;">
-                                    </div>
-                                    <div>
-                                        <h5 class="fs-5 mb-1">
-                                            {{ $user->name }}
-                                        </h5>
-                                        <p class="mb-0 fs-6">{{ $user->mac }}</p>
-                                        <p class="mb-0 fs-6">{{ $user->jabatan }} - {{ $user->kode }}</p>
-                                    </div>
-                                </div>
-                                <hr>
-                                <h6 class="text-secondary text-end mb-0">
-                                    Terputus
-                                </h6>
-                            </div>
-                        @endif
-                    @endforeach
-                @else
-                    <script>
-                        Swal.fire({
-                            text: 'Pengguna Tidak Ditemukan',
-                            timer: 2000
-                        });
-                    </script>
-                @endif
+            <div class="search-result-container d-none pb-4" id="search-results">
+
             </div>
 
         </div>
@@ -114,84 +135,7 @@
                 <div class=" m-0 text-decoration-none text-white fw-bold">Login</div>
             </div>
 
-            <!-- Modal Login-->
-            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-3 fw-bold" id="staticBackdropLabel">Login</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body container">
-                            {{-- <form action="">
-                                <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Email address</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1"
-                                        aria-describedby="emailHelp">
-                                </div>
-                                <div class="mb-5">
-                                    <label for="exampleInputPassword1" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="exampleInputPassword1">
-                                </div>
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-success">Login</button>
-                                </div>
-                            </form> --}}
 
-                            <form method="POST" action="{{ route('login') }}">
-                                @csrf
-
-                                <!-- Email Address -->
-                                <div class="mb-3">
-                                    <label for="email" :value="__('Email')" class="form-label">Email
-                                        address</label>
-                                    <input type="email" class="form-control" id="email" name="email"
-                                        :value="old('email')" required autofocus autocomplete="username">
-                                    <x-input-error :messages="$errors->get('email')" class="mt-2 text-danger" />
-                                </div>
-
-                                <div class="mb-5">
-                                    <label for="password" :value="__('Password')" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" name="password"
-                                        required autocomplete="current-password">
-                                    <x-input-error :messages="$errors->get('password')" class="mt-2 text-danger" />
-                                </div>
-
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-success">Login</button>
-                                </div>
-
-                                <div class="container d-flex justify-content-between">
-                                    <!-- Remember Me -->
-                                    <div class="block mt-4">
-                                        <label for="remember_me" class="inline-flex items-center">
-                                            <input id="remember_me" type="checkbox"
-                                                class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
-                                                name="remember">
-                                            <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-                                        </label>
-                                    </div>
-
-                                    <div class="flex items-center justify-end mt-4">
-                                        @if (Route::has('password.request'))
-                                            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                                href="{{ route('password.request') }}">
-                                                {{ __('Forgot your password?') }}
-                                            </a>
-                                        @endif
-                                    </div>
-                                </div>
-
-
-                            </form>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <!-- Modal Login end-->
 
         </div>
     </div>
@@ -209,6 +153,8 @@
             </div>
             <div class="container p-3">
                 <div class="peta-container px-2">
+
+                    {{-- ruang Atas --}}
                     <div class="row mb-5">
 
                         {{-- Ruang Ekosistem --}}
@@ -307,6 +253,7 @@
                         <div class="col-3 flex gap-2 pt-2 kelas-tengah">
 
                         </div>
+
                         {{-- Ruang Dosen-6 --}}
                         <div class="flex pt-2 col kelas Ruang-Dosen-6" data-bs-toggle="modal"
                             data-bs-target="#Dosen-6">
@@ -403,9 +350,10 @@
                         </div>
                         {{-- Ruang Dosen-2 End --}}
                     </div>
+
                     {{-- kelas bawah --}}
                     <div class="row">
-                        {{-- Ruang Dosen-2 --}}
+                        {{-- Ruang LSI-3 --}}
                         <div class="flex pt-2 col kelas Ruang-LSI-3" data-bs-toggle="modal" data-bs-target="#LSI-3">
                         </div>
                         <div class="modal fade modal-Ruang-LSI-3" id="LSI-3" data-bs-backdrop="static"
@@ -599,6 +547,7 @@
                         {{-- Ruang Dosen-1 End --}}
 
                     </div>
+
                 </div>
             </div>
         </div>
@@ -614,33 +563,73 @@
     {{-- Script search --}}
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            var searchInput = document.getElementById("searchInput");
-
-            var savedValue = localStorage.getItem("searchInputValue");
-
-            if (savedValue) {
-                searchInput.value = savedValue;
-            }
-
-            searchInput.addEventListener("input", function() {
-                localStorage.setItem("searchInputValue", searchInput.value);
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
             var searchBox = document.querySelector(".search-trigger");
             var searchResultContainer = document.querySelector(".search-result-container");
+            var searchIcon = document.getElementById("search-icon");
 
             searchBox.addEventListener("click", function() {
                 searchResultContainer.classList.toggle("d-none");
+                updateSearchIcon();
             });
 
+            function updateSearchIcon() {
+                if (searchResultContainer.classList.contains("d-none")) {
+                    searchIcon.innerHTML =
+                        '<svg xmlns="http://www.w3.org/2000/svg" height="25" width="25" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#ffffff" d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM135 241c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l87 87 87-87c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 345c-9.4 9.4-24.6 9.4-33.9 0L135 241z"/></svg>';
+                } else {
+                    searchIcon.innerHTML =
+                        '<svg xmlns="http://www.w3.org/2000/svg" height="25" width="25" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#ffffff" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM377 271c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-87-87-87 87c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9L239 167c9.4-9.4 24.6-9.4 33.9 0L377 271z"/></svg>';
+                }
+            }
         });
     </script>
 
+
     {{-- Script search End --}}
+
+    {{-- ajax live search --}}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function getSavedSearchTerm() {
+                return localStorage.getItem("searchInputValue") || '';
+            }
+
+            function updateSavedSearchTerm(value) {
+                localStorage.setItem("searchInputValue", value);
+            }
+
+            $('#searchInput').val(getSavedSearchTerm());
+
+            $('#searchInput').on('input', function() {
+                updateSavedSearchTerm($(this).val());
+            });
+
+            $('#searchInput').on('keyup', function() {
+                var searchTerm = $(this).val();
+                $.ajax({
+                    url: "{{ route('search') }}",
+                    type: "GET",
+                    data: {
+                        term: searchTerm
+                    },
+                    success: function(data) {
+                        $('#search-results').html(data);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                'csrftoken': '{{ csrf_token() }}'
+            }
+        });
+    </script>
+    {{-- ajax live search --}}
+
 
 
     <script>

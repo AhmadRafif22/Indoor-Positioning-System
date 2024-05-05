@@ -75,7 +75,8 @@ body {
 }
 
 .search-btn {
-    z-index: 9999;
+    background-color: white !important;
+    border: none !important;
 }
 
 .search-box-container {

@@ -24,31 +24,52 @@ class HomepageController extends Controller
 
         // dd($data);
 
-        return view('homepage', ['datas' => $data], ['users' => NULL]);
+        return view('homepage', ['datas' => $data]);
+        // return view('homepage', ['datas' => $data], ['users' => NULL]);
     }
 
     public function search(Request $request)
     {
-        $searchName = $request->input('term');
+        if ($request->ajax()) {
+            $searchTerm = $request->input('term');
 
-        $users = User::where('name', 'like', '%' . $searchName . '%')
-            ->join('pengguna', 'users.id', '=', 'pengguna.user_id')
-            ->join('perangkats', 'pengguna.perangkat_id', '=', 'perangkats.id')
-            ->select('users.name', 'perangkats.mac', 'pengguna.kode', 'pengguna.jabatan')
-            ->get();
+            $users = User::leftJoin('pengguna', 'users.id', '=', 'pengguna.user_id')
+                ->leftJoin('perangkats', 'pengguna.perangkat_id', '=', 'perangkats.id')
+                ->whereNotIn('users.name', ['admin'])
+                ->where(function ($query) use ($searchTerm) {
+                    $query->where('users.name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('pengguna.kode', 'like', '%' . $searchTerm . '%');
+                })
+                ->select('users.name', 'perangkats.mac', 'pengguna.kode', 'pengguna.jabatan')
+                ->get();
+            if ($users->isEmpty()) {
+                $output = '<div class="text-center">Tidak ada hasil ditemukan.</div>';
+            } else {
+                $output = '';
+                foreach ($users as $user) {
+                    $predictionRoomMac = $user->mac ? 'Terputus' : 'Tidak Terdaftar Perangkat';
+                    $output .= '<div class="modal-card p-3 m-2 mb-3 rounded-3 search-card-' . $user->id . '">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-4" id="profile-img-search-' . $user->id . '">
+                                        <img src="/img/profile-disconect.png" alt="" class="modal-img" style="width:60px;">
+                                    </div>
+                                    <div>
+                                        <h5 class="fs-5 mb-1">' . $user->name . '</h5>
+                                        <p class="mb-0 fs-6">' . $user->mac . '</p>
+                                        <p class="mb-0 fs-6">' . $user->jabatan . ' - ' . $user->kode . '</p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <h6 class="text-secondary text-end mb-0"  id="prediction-room-search-' . $user->id . '">' . $predictionRoomMac . '</h6>
+                            </div>';
+                }
+            }
 
-        $datas  = Perangkat::join('pengguna', 'perangkats.id', '=', 'pengguna.perangkat_id')
-            ->join('users', 'pengguna.user_id', '=', 'users.id')
-            ->select('users.id', 'users.name', 'pengguna.kode', 'pengguna.jabatan', 'perangkats.mac')
-            ->get();
-
-        foreach ($users as $user) {
-            $user->active = false;
-            $user->predRoom = '';
+            return Response($output);
         }
-
-        return view('homepage', compact('users', 'datas'));
+        return view('homepage');
     }
+
 
     /**
      * Show the form for creating a new resource.

@@ -80,7 +80,7 @@
                             </div>
                         </div>
 
-                        <div class="container text-black my-5">
+                        <div class="container content-card-container text-black my-5">
                             <h5 class="fw-bold">
                                 {{ $pengguna->jabatan }}
                             </h5>
@@ -103,9 +103,9 @@
                             </h4>
                         </div>
 
-                        <div class="container my-5">
-                            <div class="p-5 rounded-4 border text-secondary text-center">
-                                <h3 class="fw-bold">
+                        <div class="container my-5 lokasi-container-box">
+                            <div class="p-5 rounded-4 border text-secondary text-center lokasi-container">
+                                <h3 class="fw-bold lokasi-judul">
                                     Lokasi Anda
                                 </h3>
                                 <h2 class="fw-bold" id="predictedRoom">

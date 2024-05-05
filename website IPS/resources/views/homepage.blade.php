@@ -77,7 +77,7 @@
     <!-- Modal Login end-->
 
     {{-- header --}}
-    <div class="container py-5 d-flex position-relative">
+    <div class="header-container-box container py-5 d-flex position-relative">
 
         <div class="search-box p-3 rounded-3">
 
@@ -123,9 +123,9 @@
         </div>
 
         <div class="d-flex header-container justify-content-between px-4 align-items-start">
-            <div class="d-flex">
-                <img src="{{ asset('img/jti-logo.png') }}" alt="" class="">
-                <div class="px-3">
+            <div class="d-flex header-content">
+                <img src="{{ asset('img/jti-logo.png') }}" alt="" class="header-img-jti">
+                <div class="px-3 header-text">
                     <h4 class="fw-bold fs-3 mt-2">Indoor Positioning System</h4>
                     <p class="fs-4 m-0">Jurusan Teknologi Informasi</p>
                     <p class="fs-4 m-0">POLINEMA</p>
@@ -151,11 +151,11 @@
                 <h3 class="fs-3 fw-bold">Gedung Sipil</h3>
                 <h4 class="fs-4 text-secondary">Lantai 6</h4>
             </div>
-            <div class="container p-3">
+            <div class="peta-container-box container p-3">
                 <div class="peta-container px-2">
 
                     {{-- ruang Atas --}}
-                    <div class="row mb-5">
+                    <div class="ruang-atas row mb-5">
 
                         {{-- Ruang Ekosistem --}}
                         <div class="flex pt-2 col kelas Ruang-Ekosistem" data-bs-toggle="modal"
@@ -733,7 +733,7 @@
                 var element = document.querySelector('.' + datas[index].predicted_room);
                 if (element) {
                     element.innerHTML +=
-                        `<img src="/img/profile.png" alt="" width="30px" class="img-${modifiedMacAddress} m-1">`;
+                        `<img src="/img/profile.png" alt="" width="30px" class="img-${modifiedMacAddress} peta-icon-profile m-1">`;
                 }
 
                 // card modal

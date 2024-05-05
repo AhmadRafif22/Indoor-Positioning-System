@@ -40,7 +40,8 @@ class HomepageController extends Controller
                     $query->where('users.name', 'like', '%' . $searchTerm . '%')
                         ->orWhere('pengguna.kode', 'like', '%' . $searchTerm . '%');
                 })
-                ->select('users.name', 'perangkats.mac', 'pengguna.kode', 'pengguna.jabatan')
+                // ->select('users.name', 'perangkats.mac', 'pengguna.kode', 'pengguna.jabatan')
+                ->select('users.id', 'users.name', 'perangkats.mac', 'pengguna.kode', 'pengguna.jabatan')
                 ->get();
             if ($users->isEmpty()) {
                 $output = '<div class="text-center">Tidak ada hasil ditemukan.</div>';
@@ -51,7 +52,7 @@ class HomepageController extends Controller
                     $output .= '<div class="modal-card p-3 m-2 mb-3 rounded-3 search-card-' . $user->id . '">
                                 <div class="d-flex align-items-center">
                                     <div class="me-4" id="profile-img-search-' . $user->id . '">
-                                        <img src="/img/profile-disconect.png" alt="" class="modal-img" style="width:60px;">
+                                        <img src="/img/profile-disconect.png" alt="" class="modal-img-search" style="width:60px;">
                                     </div>
                                     <div>
                                         <h5 class="fs-5 mb-1">' . $user->name . '</h5>

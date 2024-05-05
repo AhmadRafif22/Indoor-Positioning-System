@@ -57,6 +57,9 @@ body {
 .modal-img {
     width: 75px;
 }
+.modal-img-search {
+    width: 75px;
+}
 /* -- modal peta -- */
 
 .search-box,

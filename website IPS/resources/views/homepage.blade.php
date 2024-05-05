@@ -659,7 +659,7 @@
 
         var lastMessageTime = {};
 
-        function setDeviceTimeout(mac) {
+        function setDeviceTimeout(mac, userId) {
             setTimeout(() => {
                 var currentTime = new Date();
                 var lastMessageReceivedTime = lastMessageTime[mac];
@@ -679,6 +679,20 @@
                         cardModalOld.remove();
                     }
 
+                    // Reset card search
+                    var elementSearchProfile = document.querySelector('#profile-img-search-' + userId);
+                    if (elementSearchProfile) {
+                        elementSearchProfile.innerHTML =
+                            `<img src="/img/profile-disconect.png" alt="" class="modal-img-search" style="width:60px;">`;
+                    }
+
+
+                    var elementSearchPrediction = document.querySelector('#prediction-room-search-' + userId);
+                    if (elementSearchPrediction) {
+                        elementSearchPrediction.innerHTML =
+                            `Terputus`;
+                    }
+
                     delete lastMessageTime[mac];
                 }
             }, 20000);
@@ -693,18 +707,18 @@
 
             var modifiedMacAddress1 = mac.replace(/:/g, "-");
 
-            setDeviceTimeout(modifiedMacAddress1);
-
-            lastMessageTime[modifiedMacAddress1] = new Date();
-
             // slug
-            predictedRoomValue = predictedRoomValue.replace(/\s+/g, '-');
+            predictedRoomValueDecode = predictedRoomValue.replace(/\s+/g, '-');
 
             const index = datas.findIndex(item => item.mac === mac);
 
+            setDeviceTimeout(modifiedMacAddress1, datas[index].id);
+
+            lastMessageTime[modifiedMacAddress1] = new Date();
+
             if (index !== -1) {
 
-                datas[index].predicted_room = predictedRoomValue;
+                datas[index].predicted_room = predictedRoomValueDecode;
 
                 // console.log("mac:  " + datas[index].mac + " | pred: " + datas[index].predicted_room);
 
@@ -747,6 +761,23 @@
                                     </div>
                                 </div>
                             `;
+                }
+
+                // card pada search item
+
+                // console.log("idnya" + datas[index].id);
+
+                var elementSearchProfile = document.querySelector('#profile-img-search-' + datas[index].id);
+                if (elementSearchProfile) {
+                    elementSearchProfile.innerHTML =
+                        `<img src="/img/profile-active.png" alt="" class="modal-img-search" style="width:60px;">`;
+                }
+
+
+                var elementSearchPrediction = document.querySelector('#prediction-room-search-' + datas[index].id);
+                if (elementSearchPrediction) {
+                    elementSearchPrediction.innerHTML =
+                        `${predictedRoomValue}`;
                 }
 
             }

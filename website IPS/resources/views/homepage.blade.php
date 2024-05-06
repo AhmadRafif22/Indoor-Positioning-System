@@ -605,6 +605,11 @@
                 updateSavedSearchTerm($(this).val());
             });
 
+            // local storage search item
+            var dataUserSearch = [
+
+            ];
+
             $('#searchInput').on('keyup', function() {
                 var searchTerm = $(this).val();
                 $.ajax({
@@ -693,6 +698,17 @@
                             `Terputus`;
                     }
 
+                    // Hapus Local Storage Search item
+                    var storedDataUserSearchString = localStorage.getItem('myData');
+
+                    var storedDataUserSearch = storedDataUserSearchString ? JSON.parse(storedDataUserSearchString) :
+                        [];
+
+                    storedDataUserSearch = storedDataUserSearch.filter(item => item.idUser !== userId);
+
+                    // Simpan kembali data ke local storage setelah dihapus
+                    localStorage.setItem('myData', JSON.stringify(storedDataUserSearch));
+
                     delete lastMessageTime[mac];
                 }
             }, 20000);
@@ -701,6 +717,8 @@
         client.on('message', function(topic, message) {
 
             const data = JSON.parse(message.toString());
+
+
             predictedRoomValue = data.predicted_room;
             mac = data.mac;
 
@@ -779,6 +797,29 @@
                     elementSearchPrediction.innerHTML =
                         `${predictedRoomValue}`;
                 }
+
+
+                // menambahkan Local storage untuk search item
+                var storedDataUserSearchString = localStorage.getItem('myData');
+
+                var storedDataUserSearch = storedDataUserSearchString ? JSON.parse(storedDataUserSearchString) : [];
+
+                const existingUserIndex = storedDataUserSearch.findIndex(item => item.idUser === datas[index].id);
+
+                if (existingUserIndex !== -1) {
+                    storedDataUserSearch[existingUserIndex].predRoom = predictedRoomValue;
+                } else {
+                    storedDataUserSearch.push({
+                        idUser: datas[index].id,
+                        predRoom: predictedRoomValue
+                    });
+                }
+
+                var updatedDataUserSearchString = JSON.stringify(storedDataUserSearch);
+
+                localStorage.setItem('myData', updatedDataUserSearchString);
+
+                // menambahkan Local storage untuk search item END
 
             }
 

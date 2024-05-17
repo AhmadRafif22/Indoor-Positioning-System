@@ -5,6 +5,12 @@ from sklearn.svm import SVC
 import datetime
 import pytz 
 import mysql.connector
+from ntplib import NTPClient
+
+def get_ntp_time():
+    c = NTPClient()
+    response = c.request('pool.ntp.org')
+    return datetime.datetime.fromtimestamp(response.tx_time, tz_GMT7)
 
 
 with open('svm_model.pkl', 'rb') as file:
@@ -78,7 +84,7 @@ def on_message(client, userdata, msg):
         #     waktu_setelah_prediksi = datetime.datetime.now(pytz.timezone('Asia/Jakarta')).strftime('%H:%M:%S')
         
         prediction = predict_room(rssi_data)
-        waktu_setelah_prediksi = datetime.datetime.now(pytz.timezone('Asia/Jakarta')).strftime('%H:%M:%S')
+        waktu_setelah_prediksi = get_ntp_time().strftime('%H:%M:%S')
 
         result_message = {"mac": mac,
                           "data": rssi_data,

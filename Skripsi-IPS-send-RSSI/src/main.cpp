@@ -313,25 +313,25 @@ void loop()
     //   reconnect();
     // }
 
-    int RSSIdosen1 = 0;
-    int RSSIdosen2 = 0;
-    int RSSIdosen3 = 0;
-    int RSSIdosen4 = 0;
-    int RSSIjurusan = 0;
-    int RSSIdosen5 = 0;
-    int RSSIadmin = 0;
-    int RSSIdosen6 = 0;
-    int RSSIbaca = 0;
-    int RSSIarsip = 0;
-    int RSSIlsi1 = 0;
-    int RSSIlpy2 = 0;
-    int RSSIlsi2 = 0;
-    int RSSIlpy3 = 0;
-    int RSSIlsi3 = 0;
-    int RSSIekosistem = 0;
+    int RSSIdosen1 = -100;
+    int RSSIdosen2 = -100;
+    int RSSIdosen3 = -100;
+    int RSSIdosen4 = -100;
+    int RSSIjurusan = -100;
+    int RSSIdosen5 = -100;
+    int RSSIadmin = -100;
+    int RSSIdosen6 = -100;
+    int RSSIbaca = -100;
+    int RSSIarsip = -100;
+    int RSSIlsi1 = -100;
+    int RSSIlpy2 = -100;
+    int RSSIlsi2 = -100;
+    int RSSIlpy3 = -100;
+    int RSSIlsi3 = -100;
+    int RSSIekosistem = -100;
 
     // get RSSI
-    int RSSI = 0;
+    int RSSI = -100;
 
     int numberOfNetworks = WiFi.scanNetworks();
 

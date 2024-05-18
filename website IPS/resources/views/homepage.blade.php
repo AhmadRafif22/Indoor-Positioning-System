@@ -619,7 +619,58 @@
                         term: searchTerm
                     },
                     success: function(data) {
-                        $('#search-results').html(data);
+                        console.log(data);
+                        var output = '';
+
+                        // Get local storage data and parse it
+                        var localData = JSON.parse(localStorage.getItem('myData')) || [];
+
+                        if (data.users.length === 0) {
+                            output =
+                                '<div class="text-center">Tidak ada hasil ditemukan.</div>';
+                        } else {
+                            data.users.forEach(function(user) {
+                                // Check if the user's ID is in localStorage
+                                var localUser = localData.find(item => item.idUser ===
+                                    user.id);
+
+                                // Set predictionRoomMac and profile image based on local storage data
+                                var predictionRoomMac = user.mac ? 'Terputus' :
+                                    'Tidak Terdaftar Perangkat';
+                                var profileImage = '/img/profile-disconect.png';
+
+                                if (localUser) {
+                                    predictionRoomMac = localUser.predRoom;
+                                    profileImage = '/img/profile-active.png';
+                                }
+
+                                output +=
+                                    '<div class="modal-card p-3 m-2 mb-3 rounded-3 search-card-' +
+                                    user.id + '">';
+                                output += '    <div class="d-flex align-items-center">';
+                                output +=
+                                    '        <div class="me-4" id="profile-img-search-' +
+                                    user.id + '">';
+                                output += '            <img src="' + profileImage +
+                                    '" alt="" class="modal-img-search" style="width:60px;">';
+                                output += '        </div>';
+                                output += '        <div>';
+                                output += '            <h5 class="fs-5 mb-1">' + user
+                                    .name + '</h5>';
+                                output += '            <p class="mb-0 fs-6">' + user
+                                    .mac + '</p>';
+                                output += '            <p class="mb-0 fs-6">' + user
+                                    .jabatan + ' - ' + user.kode + '</p>';
+                                output += '        </div>';
+                                output += '    </div>';
+                                output += '    <hr>';
+                                output +=
+                                    '    <h6 class="text-secondary text-end mb-0" id="prediction-room-search-' +
+                                    user.id + '">' + predictionRoomMac + '</h6>';
+                                output += '</div>';
+                            });
+                        }
+                        $('#search-results').html(output);
                     }
                 });
             });
@@ -635,6 +686,16 @@
     </script>
     {{-- ajax live search --}}
 
+    <script>
+        window.addEventListener('load', function() {
+            if (window.performance) {
+                if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+                    localStorage.removeItem('myData');
+                }
+            }
+        });
+    </script>
+
 
 
     <script>
@@ -642,9 +703,9 @@
 
         const client = mqtt.connect('ws://broker.sinaungoding.com:8090', {
             clientId,
-            clean: false,
-            username: 'uwais',
-            password: 'uw415_4Lqarn1'
+            clean: "{{ env('MQTT_CLEAN') }}",
+            username: "{{ env('MQTT_USERNAME') }}",
+            password: "{{ env('MQTT_PASSWORD') }}"
         });
 
         var datas = @json($datas);
@@ -700,6 +761,7 @@
 
                     // Hapus Local Storage Search item
                     var storedDataUserSearchString = localStorage.getItem('myData');
+
 
                     var storedDataUserSearch = storedDataUserSearchString ? JSON.parse(storedDataUserSearchString) :
                         [];
@@ -801,6 +863,10 @@
 
                 // menambahkan Local storage untuk search item
                 var storedDataUserSearchString = localStorage.getItem('myData');
+
+                // var testing = JSON.parse(storedDataUserSearchString);
+
+                // console.log(testing[0]['idUser']);
 
                 var storedDataUserSearch = storedDataUserSearchString ? JSON.parse(storedDataUserSearchString) : [];
 

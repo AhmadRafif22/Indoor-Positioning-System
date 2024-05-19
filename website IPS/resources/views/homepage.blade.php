@@ -112,9 +112,6 @@
             <div class="py-2 px-4 login-btn rounded" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                 <div class=" m-0 text-decoration-none text-white fw-bold">Login</div>
             </div>
-
-
-
         </div>
     </div>
     {{-- header End --}}
@@ -620,6 +617,10 @@
                                 if (localUser) {
                                     predictionRoomMac = localUser.predRoom;
                                     profileImage = '/img/profile-active.png';
+                                }
+
+                                if (!user.mac) {
+                                    user.mac = 'xx:xx:xx:xx:xx:xx';
                                 }
 
                                 output +=

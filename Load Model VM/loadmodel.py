@@ -16,18 +16,10 @@ def get_ntp_time():
 with open('svm_model.pkl', 'rb') as file:
     clf = pickle.load(file)
 
-# MQTT Settings
-# MQTT_BROKER = "40.81.29.43"
-# MQTT_PORT = 1883
-
 MQTT_BROKER = "broker.sinaungoding.com"
 MQTT_PORT = 1883
 MQTT_USERNAME = "uwais"
 MQTT_PASSWORD = "uw415_4Lqarn1"
-
-# MQTT_TOPIC = "E8:DB:84:86:3B:DA/rssi_data" 
-# MQTT_TOPIC_PUBLISH = "E8:DB:84:86:3B:DA/hasilprediksi" 
-# MQTT_TOPIC_LOG = "E8:DB:84:86:3B:DA/datalog" 
 
 mac_addresses = []
 
@@ -49,7 +41,7 @@ def get_mac_addresses_from_database():
 def predict_room(rssi_data):
     prediction = clf.predict([rssi_data])
 
-    return prediction[0]  # Mengambil hasil prediksi dari array hasil
+    return prediction[0]
 
 def on_connect(self, client, userdata, flags, rc):
     print(f"Connected pred with result code {rc}")
@@ -60,8 +52,6 @@ def on_connect(self, client, userdata, flags, rc):
         self.subscribe(f"{mac_address}/rssi_data")
         self.subscribe(f"{mac_address}/datalog")
 
-    # self.subscribe(MQTT_TOPIC)
-    # self.subscribe(MQTT_TOPIC_LOG)
 
 def on_message(client, userdata, msg):
 
@@ -76,15 +66,16 @@ def on_message(client, userdata, msg):
         waktu_esp_kirim = json_data['wek']
         mac = json_data['mac']
 
-        # if rssi_data == [0]*16:
-        #     waktu_setelah_prediksi = ""
-        #     prediction = "diluar jangkauan"
-        # else:
-        #     prediction = predict_room(rssi_data)
-        #     waktu_setelah_prediksi = datetime.datetime.now(pytz.timezone('Asia/Jakarta')).strftime('%H:%M:%S')
+        if rssi_data == [-100]*16:
+            prediction = "diluar jangkauan"
+            waktu_setelah_prediksi = ""
+        else:
+            prediction = predict_room(rssi_data)
+            waktu_setelah_prediksi = get_ntp_time().strftime('%H:%M:%S')
+
         
-        prediction = predict_room(rssi_data)
-        waktu_setelah_prediksi = get_ntp_time().strftime('%H:%M:%S')
+        # prediction = predict_room(rssi_data)
+        # waktu_setelah_prediksi = get_ntp_time().strftime('%H:%M:%S')
 
         result_message = {"mac": mac,
                           "data": rssi_data,
@@ -111,13 +102,13 @@ def on_message(client, userdata, msg):
         waktu_esp_terima = json_data['wet']
 
         # Save data to MySQL database
-        # sql = "INSERT INTO logdata (mac, data, wek, wsk, predicted_room, wet) VALUES (%s, %s, %s, %s, %s, %s)"
-        # val = (mac, json.dumps(rssi_data), waktu_esp_kirim, waktu_server_kirim, predicted_room, waktu_esp_terima)
-        # cursor.execute(sql, val)
-        # conn.commit()
+        sql = "INSERT INTO logdata (mac, data, wek, wsk, predicted_room, wet) VALUES (%s, %s, %s, %s, %s, %s)"
+        val = (mac, json.dumps(rssi_data), waktu_esp_kirim, waktu_server_kirim, predicted_room, waktu_esp_terima)
+        cursor.execute(sql, val)
+        conn.commit()
 
         # Print message if data is successfully saved
-        # print("Data ",mac," berhasil disimpan ke dalam database MySQL")
+        print("Data ",mac," berhasil disimpan ke dalam database MySQL")
         
 
 

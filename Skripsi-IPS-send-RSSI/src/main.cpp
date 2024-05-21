@@ -14,12 +14,6 @@
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
-// mqtt
-// const char *mqtt_server = "localhost";
-// const char *mqtt_server = "broker.hivemq.com";
-// const char *mqtt_server = "test.mosquitto.org";
-// const char *mqtt_server = "40.81.29.43";
-
 const char *mqtt_server = "broker.sinaungoding.com";
 const int mqttPort = 1883;
 const char *mqtt_username = "uwais";
@@ -32,7 +26,7 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "pool.ntp.org", 25200);
+NTPClient timeClient(ntpUDP, "time.google.com", 25200, 15000);
 
 String macAddr;
 
@@ -62,7 +56,7 @@ void callback(char *topic, byte *payload, unsigned int length)
 {
   timeClient.update();
 
-  String waktuEspTerima = timeClient.getFormattedTime();
+  unsigned long waktuEspTerima = timeClient.getEpochTime();
 
   Serial.print("Prediksi : ");
 
@@ -83,8 +77,11 @@ void callback(char *topic, byte *payload, unsigned int length)
 
   const char *mac = doc["mac"];
   JsonArray rssiData = doc["data"];
-  const char *waktuEspKirim = doc["wek"];
-  const char *waktuSetelahPrediksi = doc["wsk"];
+  // const char *waktuEspKirim = doc["wek"];
+  // const char *waktuSetelahPrediksi = doc["wsk"];
+  const long waktuEspKirim = doc["wek"].as<long>();
+  const long waktuSetelahPrediksi = doc["wsk"].as<long>();
+
   const char *predictedRoom = doc["predicted_room"];
 
   display.setTextSize(1);
@@ -165,7 +162,7 @@ void setup()
   // WiFi.begin("JTI-POLINEMA", "jtifast!");
   // WiFi.begin("Joko Puchi", "yondatau");
   WiFi.begin("Araspot", "yondatau");
-  // WiFi.begin("White House", "abahganteng");
+
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(1000);
@@ -209,31 +206,6 @@ void reconnect()
   }
 }
 
-int getRSSI(const char *mac)
-{
-  int RSSI = 0;
-
-  int numberOfNetworks = WiFi.scanNetworks();
-
-  if (numberOfNetworks == 0)
-  {
-    Serial.println("No networks found");
-  }
-  else
-  {
-    for (int i = 0; i < numberOfNetworks; ++i)
-    {
-
-      if (WiFi.BSSIDstr(i) == mac)
-      {
-        RSSI = WiFi.RSSI(i);
-      }
-    }
-  }
-
-  return RSSI;
-}
-
 void loop()
 {
 
@@ -261,7 +233,6 @@ void loop()
       timeClient.update();
 
       // Mengambil waktu saat ini
-      // String waktu = timeClient.getFormattedTime();
       time_t epochTime = timeClient.getEpochTime();
       struct tm *timeinfo;
       timeinfo = localtime(&epochTime);
@@ -308,11 +279,6 @@ void loop()
     // Simpan waktu sekarang
     previousMillis = currentMillis;
 
-    // if (!client.connected())
-    // {
-    //   reconnect();
-    // }
-
     int RSSIdosen1 = -100;
     int RSSIdosen2 = -100;
     int RSSIdosen3 = -100;
@@ -331,8 +297,6 @@ void loop()
     int RSSIekosistem = -100;
 
     // get RSSI
-    int RSSI = -100;
-
     int numberOfNetworks = WiFi.scanNetworks();
 
     if (numberOfNetworks == 0)
@@ -415,12 +379,15 @@ void loop()
     timeClient.update();
 
     // Mengambil waktu saat ini
-    String waktu = timeClient.getFormattedTime();
+    // String waktuss = timeClient.getFormattedTime();
+    // unsigned long waktu = timeClient.getEpochTime() * 1000;
+
+    unsigned long waktu = timeClient.getEpochTime();
 
     char message[255];
     snprintf(message, sizeof(message),
-             "{\"mac\": \"%s\",\"data\": [%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d],\"wek\": \"%s\"}",
-             macAddr.c_str(), RSSIdosen1, RSSIdosen2, RSSIdosen3, RSSIdosen4, RSSIjurusan, RSSIdosen5, RSSIadmin, RSSIdosen6, RSSIbaca, RSSIarsip, RSSIlsi1, RSSIlpy2, RSSIlsi2, RSSIlpy3, RSSIlsi3, RSSIekosistem, waktu.c_str());
+             "{\"mac\": \"%s\",\"data\": [%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d],\"wek\": %lu}",
+             macAddr.c_str(), RSSIdosen1, RSSIdosen2, RSSIdosen3, RSSIdosen4, RSSIjurusan, RSSIdosen5, RSSIadmin, RSSIdosen6, RSSIbaca, RSSIarsip, RSSIlsi1, RSSIlpy2, RSSIlsi2, RSSIlpy3, RSSIlsi3, RSSIekosistem, waktu);
 
     String topic_rssi_data = macAddr + "/rssi_data";
     client.publish(topic_rssi_data.c_str(), message);

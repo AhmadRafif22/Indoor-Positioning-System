@@ -17,10 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('mac');
             $table->string('data');
-            $table->string('wek');
-            $table->string('wsk');
+            $table->bigInteger('wek');
+            $table->bigInteger('wsk');
             $table->string('predicted_room');
-            $table->string('wet');
+            $table->bigInteger('wet');
+            $table->string('waktu_simpan');
 
             $table->timestamps();
         });

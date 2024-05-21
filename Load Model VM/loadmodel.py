@@ -2,15 +2,15 @@ import json
 import pickle
 import paho.mqtt.client as mqtt
 from sklearn.svm import SVC
-import datetime
+from datetime import datetime
 import pytz 
 import mysql.connector
-from ntplib import NTPClient
+import ntplib
 
 def get_ntp_time():
-    c = NTPClient()
-    response = c.request('pool.ntp.org')
-    return datetime.datetime.fromtimestamp(response.tx_time, tz_GMT7)
+    client = ntplib.NTPClient()
+    response = client.request('time.google.com')
+    return int(response.tx_time + 25200)
 
 
 with open('svm_model.pkl', 'rb') as file:
@@ -66,16 +66,16 @@ def on_message(client, userdata, msg):
         waktu_esp_kirim = json_data['wek']
         mac = json_data['mac']
 
-        if rssi_data == [-100]*16:
-            prediction = "diluar jangkauan"
-            waktu_setelah_prediksi = ""
-        else:
-            prediction = predict_room(rssi_data)
-            waktu_setelah_prediksi = get_ntp_time().strftime('%H:%M:%S')
+        # if rssi_data == [-100]*16:
+        #     prediction = "diluar jangkauan"
+        #     waktu_setelah_prediksi = ""
+        # else:
+        #     prediction = predict_room(rssi_data)
+        #     waktu_setelah_prediksi = get_ntp_time().strftime('%H:%M:%S')
 
         
-        # prediction = predict_room(rssi_data)
-        # waktu_setelah_prediksi = get_ntp_time().strftime('%H:%M:%S')
+        prediction = predict_room(rssi_data)
+        waktu_setelah_prediksi = get_ntp_time()
 
         result_message = {"mac": mac,
                           "data": rssi_data,
@@ -93,6 +93,8 @@ def on_message(client, userdata, msg):
         decoded_msg = msg.payload.decode()
         json_data = json.loads(decoded_msg)
 
+        now = datetime.now(tz_GMT7)
+
         # Extract data from MQTT message
         mac = json_data['mac']
         rssi_data = json_data['data']
@@ -100,10 +102,11 @@ def on_message(client, userdata, msg):
         waktu_server_kirim = json_data['wsk']
         predicted_room = json_data['predicted_room']
         waktu_esp_terima = json_data['wet']
+        waktu_data_simpan = now.strftime("%d/%m/%Y - %H:%M:%S")
 
         # Save data to MySQL database
-        sql = "INSERT INTO logdata (mac, data, wek, wsk, predicted_room, wet) VALUES (%s, %s, %s, %s, %s, %s)"
-        val = (mac, json.dumps(rssi_data), waktu_esp_kirim, waktu_server_kirim, predicted_room, waktu_esp_terima)
+        sql = "INSERT INTO logdata (mac, data, wek, wsk, predicted_room, wet, waktu_simpan) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        val = (mac, json.dumps(rssi_data), waktu_esp_kirim, waktu_server_kirim, predicted_room, waktu_esp_terima, waktu_data_simpan)
         cursor.execute(sql, val)
         conn.commit()
 
